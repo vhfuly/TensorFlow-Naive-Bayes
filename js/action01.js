@@ -65,7 +65,6 @@ const eliminateDuplicates = (arr) => {
 }
 
 const organize = () => {
-	let labels = returnsClasses();
 	let params = {};
 
 	for (let i=0; i < inputs.length; i++) {
@@ -90,4 +89,27 @@ const organize = () => {
 
 const countText = (text, search) => {
 	return text.split(search).length-1;
+}
+
+const frequency = () => {
+	let categories = [];
+	let params = {};
+	let object = organize();
+	let labels = returnsClasses();
+
+	for (let i=0; i < inputs.length; i++) {
+		params.input = inputs[i];
+		
+		for(let j=0; j< labels.length; j++) {
+			params[labels[j]] = countText(object[labels[j]], inputs[i]);
+		}
+		categories[i] = JSON.stringify(params);
+	}
+
+	categories = eliminateDuplicates(categories);
+
+	for (let i=0; i < categories.length; i++) {
+		categories[i] = JSON.parse(categories[i])
+	}
+	return categories;
 }
