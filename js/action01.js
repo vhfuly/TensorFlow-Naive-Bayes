@@ -24,9 +24,9 @@ const register = () => {
 	let options = '<option value=""></option>';
 	let nameInputs = eliminateDuplicates(inputs);
 
-	for(let i = 0; i < nameInputs.length; i++) {
-		options = `<option value=${nameInputs[i]}>${nameInputs[i]}</option>`;
-	}
+	nameInputs.map(nameInput => {
+		options = `<option value=${nameInput}>${nameInput}</option>`;
+	})
 
 	$('#rows').html(rows);
 	$('#selectInput').html(options);
@@ -41,11 +41,11 @@ const execute = () =>{
 	if (selectInput.toString().trim().length > 0 ) {
 		let naive = naiveBayes(selectInput);
 
-		
-		for(let i = 0; i < nameClasses.length; i++) {
-			let percentage = parseFloat(naive[nameClasses[i]] * 100).toFixed(2)
-			probability += `<strong> ${nameClasses[i]}: </strong> ${percentage} % - `;
-		}
+		nameClasses.map(nameClass => {
+			let percentage = parseFloat(naive[nameClass] * 100).toFixed(2)
+			probability += `<strong> ${nameClass}: </strong> ${percentage} % - `;
+
+		})
 		probability = `: ${probability} #`;
 		probability = probability.replace(' - #', '');
 	} else {
@@ -79,7 +79,6 @@ const organize = () => {
 	}
 	let str = JSON.stringify(params);
 	str = str.replace(/-"/g, '"');
-	console.log(str)
 	str = str.replace(/-/g, ',');
 
 	params = JSON.parse(str);
@@ -100,17 +99,19 @@ const frequency = () => {
 	for (let i=0; i < inputs.length; i++) {
 		params.input = inputs[i];
 		
-		for(let j=0; j< labels.length; j++) {
-			params[labels[j]] = countText(object[labels[j]], inputs[i]);
-		}
+		labels.map(label => {
+			return params[label] = countText(object[label], inputs[i]);
+		})
+		
 		categories[i] = JSON.stringify(params);
 	}
 
 	categories = eliminateDuplicates(categories);
 
-	for (let i=0; i < categories.length; i++) {
-		categories[i] = JSON.parse(categories[i])
-	}
+	categories = categories.map(category => {
+		return category = JSON.parse(category)
+	})
+	
 	return categories;
 }
 
@@ -129,12 +130,46 @@ const sumOfClasses = (arr) => {
 
 const totalPerClass = () => {
 	let totalClass = [];
-	let nameClass = returnsClasses();
+	let nameClasses = returnsClasses();
 	let strClasses = JSON.stringify(classes);
 
-	for (let i=0; i < nameClass.length; i++) {
-		totalClass[nameClass[i]] = countText(strClasses, nameClass[i]);
-	}
+	nameClasses.map(nameClass => {
+		totalClass[nameClass] = countText(strClasses, nameClass);
+	});
 
 	return totalClass;
+}
+
+const totalSumsClasses =  () => {
+	let totalClasses = Object.values(totalPerClass());
+	let sum = 0;
+
+	totalClasses.map(totalClass => {
+		sum += parseFloat(totalClass);
+	})
+	return sum;
+}
+
+const weightsInputs = () => {
+	let weights = [];
+	let categories = frequency();
+
+	categories.map(category => {
+		weights[category.input] = sumOfClasses(Object.values(category)) / totalSumsClasses();
+	})
+
+	return weights;
+}
+
+const weightsClasses = () => {
+	let nameClasses = returnsClasses();
+	let totalClasses = totalPerClass();
+	let weights = [];
+
+	nameClasses.map(nameClass => {
+		weights[nameClass] = totalClasses[nameClass] / totalSumsClasses();
+	});
+
+	return weights;
+
 }
