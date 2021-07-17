@@ -113,3 +113,28 @@ const frequency = () => {
 	}
 	return categories;
 }
+
+const numberOfClasses = () => {
+	let categories = frequency();
+	return parseInt(Object.keys(categories[0]).length-1);
+}
+
+const sumOfClasses = (arr) => {
+	let sum = 0;
+	for (let i=1; i < arr.length; i++) {
+		sum += parseInt(arr[i]);
+	}
+	return sum;
+}
+
+const totalPerClass = () => {
+	let totalClass = [];
+	let nameClass = returnsClasses();
+	let strClasses = JSON.stringify(classes);
+
+	for (let i=0; i < nameClass.length; i++) {
+		totalClass[nameClass[i]] = countText(strClasses, nameClass[i]);
+	}
+
+	return totalClass;
+}
