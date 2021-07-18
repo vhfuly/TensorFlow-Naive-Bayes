@@ -1,5 +1,7 @@
-﻿let inputs = ['bom', 'mau', 'indiferente', 'indiferente'];
-let classes = ['positivo', 'negativo','positivo', 'negativo'];
+﻿// let inputs = ['bom', 'mau', 'indiferente', 'indiferente'];
+// let classes = ['positivo', 'negativo','positivo', 'negativo'];
+let inputs = [];
+let classes = [];
 
 const prepareRegistration = () => {
 	$('#input').val('');
@@ -25,7 +27,7 @@ const register = () => {
 	let nameInputs = eliminateDuplicates(inputs);
 
 	nameInputs.map(nameInput => {
-		options = `<option value=${nameInput}>${nameInput}</option>`;
+		options += `<option value=${nameInput}>${nameInput}</option>`;
 	})
 
 	$('#rows').html(rows);
@@ -43,14 +45,15 @@ const execute = () =>{
 
 		nameClasses.map(nameClass => {
 			let percentage = parseFloat(naive[nameClass] * 100).toFixed(2)
-			probability += `<strong> ${nameClass}: </strong> ${percentage} % - `;
-
+			probability += `<strong> ${nameClass}: </strong> ${percentage} % -`;
 		})
 		probability = `: ${probability} #`;
-		probability = probability.replace(' - #', '');
+		probability = probability.replace('- #', '');
 	} else {
 		probability = ': 0';
 	}
+	
+	$('#result').html(probability)
 }
 
 const returnsClasses = () => {
@@ -177,4 +180,34 @@ const inputClassOccurrence = (_input = '', _class= '') => {
 		}
 	});
 	return occurrence;
+}
+
+const naiveBayes = (_input = '') => {
+	let nameClasses = returnsClasses();
+	let totalClass = totalPerClass();
+
+	let categories = frequency();
+	let sum = 0;
+
+	categories.forEach(category => {
+		if(category['input'] === _input) {
+			nameClasses.forEach(nameClass => {
+				sum += parseInt(category[nameClass]);
+			})
+		}
+	});
+
+	sum = tf.scalar(sum);
+
+	let sumClass = tf.scalar(totalSumsClasses());
+	let probability = [];
+	
+	nameClasses.forEach(nameClass => {
+		let occurrence = tf.scalar(inputClassOccurrence(_input, nameClass));
+		let totalC = tf.scalar(totalClass[nameClass]);
+
+		probability[nameClass] =
+		  occurrence.div(totalC).mul(totalC.div(sumClass)).div(sum.div(sumClass)).dataSync();
+	})
+  return probability;
 }
