@@ -141,13 +141,7 @@ const totalPerClass = () => {
 }
 
 const totalSumsClasses =  () => {
-	let totalClasses = Object.values(totalPerClass());
-	let sum = 0;
-
-	totalClasses.map(totalClass => {
-		sum += parseFloat(totalClass);
-	})
-	return sum;
+	return classes.length;
 }
 
 const weightsInputs = () => {
@@ -171,5 +165,16 @@ const weightsClasses = () => {
 	});
 
 	return weights;
+}
 
+const inputClassOccurrence = (_input = '', _class= '') => {
+	let categories = frequency();
+	let occurrence = 0;
+
+	categories.forEach(category => {
+		if (category['input'] === _input) {
+			occurrence = parseInt(category[_class]);
+		}
+	});
+	return occurrence;
 }
