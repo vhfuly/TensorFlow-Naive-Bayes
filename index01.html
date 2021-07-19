@@ -1,5 +1,4 @@
-﻿<!doctype html>
-<html>
+﻿<html>
 	<head>
 	   <link rel="stylesheet" href="css/bootstrap.min.css">
 	   <script src="js/jquery.min.js"></script>
@@ -7,8 +6,7 @@
 	   <script src="js/bootstrap.min.js"></script>
 	   <meta charset="utf-8">
 	   <title>TensorFlow</title>
-
-	   <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
+		 <script src="FileSaver/FileSaver.js"></script>
 	   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.4/dist/tf.min.js"></script>
 
 	</head>
@@ -48,9 +46,8 @@
 			    </tbody>
 			  </table>
 		 </div>
-
-		 <input type="file" class="table-secondary" class="form-control" onchange="abrir(event)"><br>
-		 <button type="button" class="btn btn-lg btn-success float-right" onclick="salvar()">Salvar Modelo</button>
+		 <input type="file" class="table-secondary" class="form-control" id="file" onchange="catchCSV(this)"><br>
+		 <button type="button" class="btn btn-lg btn-success float-right" onclick="save()">Salvar Modelo</button>
 	   </div>
 
 	   <div class="modal fade" id="modalNovo">
