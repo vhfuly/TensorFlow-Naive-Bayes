@@ -1,4 +1,4 @@
-﻿// Navies Bayes Probabilístico
+﻿// Navies Bayes classificativo
 let inputs = [];
 let classes = [];
 
@@ -85,12 +85,17 @@ const execute = () =>{
 	if (selectInput.toString().trim().length > 0 ) {
 		let naive = naiveBayes(selectInput);
 
+		let highestPercentage = 0;
+		let classPercentage = '';
+
 		nameClasses.map(nameClass => {
 			let percentage = parseFloat(naive[nameClass] * 100).toFixed(2)
-			probability += `<strong> ${nameClass}: </strong> ${percentage} % -`;
+			if (percentage >= highestPercentage) {
+				highestPercentage = percentage;
+				classPercentage = nameClass;
+			}
 		})
-		probability = `: ${probability} #`;
-		probability = probability.replace('- #', '');
+		probability = ` - CLASSIFICAÇÃO: <strong>${classPercentage}</strong>`;
 	} else {
 		probability = ': 0';
 	}
