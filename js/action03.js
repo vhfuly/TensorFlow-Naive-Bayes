@@ -1,6 +1,8 @@
 ﻿// Navies Bayes linguagem natural
 let inputs = [];
 let classes = [];
+let loaded = '';
+let fileName = '';
 
 let leitorDeCSV = new FileReader();
 
@@ -10,70 +12,40 @@ window.onload = function init() {
 
 function catchCSV(inputFile) {
 	let file = inputFile.files[0];
- 	leitorDeCSV.readAsText(file);
+	fileName = file.name;
+	leitorDeCSV.readAsText(file);
 }
 
 
 const openFile = (event) => {
 	let file = event.target.result;
+	console.log('test',fileName)
 	file = file.trim()
-	load(file);
+	load(file, fileName);
+	prepareRegistration();
 }
 
-const load = (data) => {
-	let character = ',';
-	if(data.indexOf(';') >= 0) character = ';';
+const load = (data, name) => {
+	let className = name.substr(0, name.indexOf('.')).toString().trim();
+
+	data = data.replace(/\r\n\r\n/g, '');
 	let lines = data.split('\r\n');
-	for(let i=1; i<lines.length; i++) {
-		let cells = lines[i].split(character);
-		inputs.push(cells[0]);
-		classes.push(cells[1]);
-	}	
-  register();
-}
 
-const save = () => {
-	let txt = 'input;output\r\n';
-	for(let i=0; i<inputs.length; i++) {
-		txt += inputs[i]+';'+classes[i]+'\r\n';
-	}
-	txt += '#';
-	txt = txt.replace(/\r\n#/g, '');
-	let filename = 'model';
-	let blob = new Blob([txt], {type: 'text/plain;charset=utf-8'});
-	saveAs(blob, filename + '.csv');
+	lines.map(line => {
+		//tokenização do texto
+		let tokens = line.split(' ');
+		tokens.map(token => {
+			inputs.push(token.toString().trim());
+			classes.push(className);
+		})
+	})
+	loaded += 'Carregado o arquivo: ' + className + '<br>';
+	$('#loaded').html(loaded);
 }
 
 const prepareRegistration = () => {
 	$('#input').val('');
-	$('#class').val('');
-}
-
-const register = () => {
-	if($('#input').val().toString().trim().length > 0) {
-		inputs.push($('#input').val().toString().trim());
-		classes.push($('#class').val().toString().trim());
-	}
-	let rows = '';
-
-	for(let i = 0; i < inputs.length; i++) {
-		rows += `
-		<tr>
-			<td> ${inputs[i]} </td>
-			<td> ${classes[i]} </td>
-		</tr>
-		`
-	}
-
-	let options = '<option value=""></option>';
-	let nameInputs = eliminateDuplicates(inputs);
-
-	nameInputs.map(nameInput => {
-		options += `<option value=${nameInput}>${nameInput}</option>`;
-	})
-
-	$('#rows').html(rows);
-	$('#selectInput').html(options);
+	$('#class').val('0');
 }
 
 const execute = () =>{

@@ -8,10 +8,8 @@
 	   <meta charset="utf-8">
 	   <title>TensorFlow</title>
 
-	   <script src="tensorflow/tf.min.js"></script>
-	   <!--
 	   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.4/dist/tf.min.js"></script>
-	   -->
+	
 	</head>
 	<body>
 	   <nav class="navbar navbar-expand-sm bg-success">
@@ -25,18 +23,17 @@
 	   </nav>
 	   <br>
 	   <div class="container">
-	     <img src="img/tf.png" width="5%" style="float: right;">
 	     <h2>Inteligência Artificial com JavaScript e TensorFlow.js</h2>
 	     <p>Para linguagem natural</p>	     
 
-	     <input type="file" class="form-control" onchange="catchCSV(event)">
+	     <input type="file" class="form-control" onchange="catchCSV(this)">
 	     <div id="loaded" class="float-right"></div>
 	     <br>
 
-	     <textarea id="inputs" rows="3" class="form-control" spellcheck="false"></textarea>
-	     <div class="bg-success mt-2" style="padding: 5px;" align="right">Classificação com BAYES: <span id="classe">0</span></div>
+	     <textarea id="input" rows="3" class="form-control" spellcheck="false"></textarea>
+	     <div class="bg-success mt-2" style="padding: 5px;" align="right">Classificação com BAYES: <span id="class">0</span></div>
 	     <br>
-	     <button type="button" class="btn btn-lg btn-success" onclick="register()">Classificar</button>
+	     <button type="button" class="btn btn-lg btn-success" onclick="execute()">Classificar</button>
 
 	   </div>
 
