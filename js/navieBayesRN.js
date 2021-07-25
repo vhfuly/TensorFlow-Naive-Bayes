@@ -82,13 +82,46 @@ const eliminateDuplicates = (arr) => {
 
 
 const arrayStringToNumber = (arr) => {
+  let result = [];
 
+  arr.map(elementArr => {
+    let element = elementArr;
+    if((element === 'bom')||(element ==='positivo')) element = 1;
+    else element = 0;
+    result.push(element);
+  });
+  return result;
 }
 
 const toClass = (arr) => {
+  let output = arr[0];
 
+  if(output <= 0) output = 'negativo';
+  else output = 'positivo';
+  return output;
 }
 
 const execute = () =>{
+  let execution =[];
+  let selectInput = $('#selectInput').val().toString().trim();
 
+  if(selectInput.length > 0) {
+    $('#result').html('...Carregando.');
+    execution = arrayStringToNumber([selectInput]);
+
+    const model = tf.sequential();
+    const inputLayer = tf.layers.dense({units: 1, inputShape: [1]});
+    model.add(inputLayer);
+    model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+
+    const x = tf.tensor(arrayStringToNumber(inputs), [inputs.length, 1]);
+    const y = tf.tensor(arrayStringToNumber(classes), [classes.length, 1]);
+    const input = tf.tensor(execution, [1, 1]);
+
+    model.fit(x, y, {epochs: 500}).then(() => {
+      let output = model.predict(input).abs().round().dataSync();
+      output = toClass(output);
+      $('#result').html(` - Classificação: <strong>${output}</strong>`)
+    })
+  }
 }
