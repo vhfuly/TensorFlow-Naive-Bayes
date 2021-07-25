@@ -22,7 +22,6 @@ const openFile = (event) => {
 	console.log('test',fileName)
 	file = file.trim()
 	load(file, fileName);
-	prepareRegistration();
 }
 
 const load = (data, name) => {
@@ -41,6 +40,7 @@ const load = (data, name) => {
 	})
 	loaded += 'Carregado o arquivo: ' + className + '<br>';
 	$('#loaded').html(loaded);
+	prepareRegistration();
 }
 
 const prepareRegistration = () => {
@@ -49,30 +49,37 @@ const prepareRegistration = () => {
 }
 
 const execute = () =>{
-	let selectInput = $('#selectInput').val();
-	let probability = '';
+	$('#class').html('...')
+
+	let input = $('#input').val().toString().trim();
+	let tokenizationInput = input.split(' ');
 
 	let nameClasses = returnsClasses();
-	
-	if (selectInput.toString().trim().length > 0 ) {
-		let naive = naiveBayes(selectInput);
+	let probability = [];
 
-		let highestPercentage = 0;
-		let classPercentage = '';
+	tokenizationInput.map(token => {
+		let naive = naiveBayes(token);
 
-		nameClasses.map(nameClass => {
-			let percentage = parseFloat(naive[nameClass] * 100).toFixed(2)
-			if (percentage >= highestPercentage) {
-				highestPercentage = percentage;
-				classPercentage = nameClass;
-			}
-		})
-		probability = ` - CLASSIFICAÇÃO: <strong>${classPercentage}</strong>`;
-	} else {
-		probability = ': 0';
-	}
-	
-	$('#result').html(probability)
+		nameClasses.map(nameClass =>{
+			let percentage = parseFloat(naive[nameClass] * 100).toFixed(2);
+			if (percentage >= 50) probability.push(nameClass)
+		});
+	});
+
+	let classification = '';
+	let repetition = 0;
+	nameClasses.map(nameClass =>{
+		let repeat = probability.filter(nameClassProbability => {
+			return nameClassProbability === nameClass;
+		}).length;
+
+		if(repeat > repetition) {
+			repetition = repeat;
+			classification = nameClass;
+		}
+	});
+
+	$('#class').html(classification)
 }
 
 const returnsClasses = () => {
